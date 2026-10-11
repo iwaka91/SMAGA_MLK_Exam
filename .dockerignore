@@ -1,0 +1,10 @@
+.git
+.env
+.env.*
+!.env.production.example
+__pycache__/
+*.pyc
+*.zip
+mock_db.json
+public/uploads/
+data/

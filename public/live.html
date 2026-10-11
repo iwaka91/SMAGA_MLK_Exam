@@ -1,0 +1,14 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050914"><title>Live Board • SMAGA Maliku Exam</title><link rel="stylesheet" href="assets/css/live.css?v=0.3"></head><body>
+<div id="liveLoginGate" class="hidden" style="position:fixed;z-index:999;inset:0;background:#080f1b;display:none;align-items:center;justify-content:center;padding:20px">
+  <form id="liveLoginForm" style="max-width:380px;width:100%;background:#16233b;border:1px solid #345;border-radius:16px;padding:25px;display:grid;gap:12px;color:white">
+    <h2>Live Board — Petugas</h2><p>Login guru/admin diperlukan pada perangkat ini.</p>
+    <input id="liveEmail" type="email" placeholder="Email" required style="padding:12px;border-radius:7px">
+    <input id="livePassword" type="password" placeholder="Password" required style="padding:12px;border-radius:7px">
+    <button type="submit" style="padding:12px;cursor:pointer">Masuk Live Board</button><small id="liveLoginError"></small>
+  </form></div><main class="board">
+<header><div class="brand"><div class="logo">SM</div><div><div class="kicker">LIVE BOARD • SMAGA MALIKU EXAM</div><h1 id="examTitle">Menunggu ujian…</h1></div></div><div class="stats"><div><b id="checkedIn">0</b><span>Check-in</span></div><div><b id="submitted">0</b><span>Submit</span></div></div></header>
+<section class="hero"><div class="time-card"><span>SISA WAKTU</span><strong id="countdown">--:--:--</strong><div class="time-foot"><span>Server <b id="serverClock">--:--:--</b></span><span>Berakhir <b id="endClock">--:--:--</b></span></div></div><div class="token-card"><span>TOKEN AKTIF</span><strong id="token">—</strong><small>Kode ujian <b id="examCode">—</b></small></div></section>
+<section class="grid"><article class="panel"><div class="panel-head"><div><div class="kicker">TOP 10</div><h2>Leaderboard Individu</h2></div></div><div id="topList" class="top-list"></div></article><article class="panel"><div class="panel-head"><div><div class="kicker">RATA-RATA</div><h2>Peringkat Kelas</h2></div></div><div id="classList" class="class-list"></div></article></section>
+<footer><span id="statusText">Live Board siap</span><span>Auto refresh 3 detik</span></footer>
+<div class="chooser"><label>Ujian<select id="examSelect"></select></label></div>
+</main><script src="assets/js/live.js?v=1.0-rc1"></script></body></html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07101e">
+<title>Teacher/Admin • SMAGA Maliku Exam</title>
+<link rel="stylesheet" href="assets/css/admin.css?v=0.6">
+</head>
+<body>
+<div id="pinGate" class="gate">
+  <form id="pinForm" class="gate-card">
+    <div class="logo">SM</div><div class="kicker">SMAGA MALIKU EXAM</div><h1>Teacher / Admin</h1>
+    <p>V1.0 Release Candidate — fitur dibekukan; fokus keamanan dan kesiapan online.</p>
+    <label id="pinLabel">PIN demo<input id="adminPin" type="password" inputmode="numeric" placeholder="Masukkan PIN"></label>
+    <label id="emailLabel" class="hidden">Email guru/admin<input id="adminEmail" type="email" autocomplete="username" placeholder="guru@sekolah.sch.id"></label>
+    <label id="passwordLabel" class="hidden">Password<input id="adminPassword" type="password" autocomplete="current-password" placeholder="Password akun Supabase"></label>
+    <button class="btn primary" type="submit">Masuk Dashboard</button><small id="pinHint">Mode lokal saja • PIN: <b>2026</b></small>
+  </form>
+</div>
+
+<div id="app" class="hidden">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">SM</div><div><b>SMAGA Maliku</b><span>Exam V1.0 RC1</span></div></div>
+    <nav>
+      <button class="nav active" data-tab="dashboard">⌂ <span>Dashboard</span></button>
+      <button class="nav" data-tab="exams">▣ <span>Ujian</span></button>
+      <button class="nav" data-tab="results">▤ <span>Peserta & Hasil</span></button>
+      <button class="nav" data-tab="storage">▧ <span>Storage</span></button>
+    </nav>
+    <div class="sidebar-bottom"><button id="logoutAdmin" type="button" class="btn tiny ghost" style="margin-bottom:10px">Keluar Admin</button><a href="/" target="_blank">Buka Student Client ↗</a><a href="live.html" target="_blank">Buka Live Board ↗</a></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><div class="kicker">TEACHER / ADMIN</div><h1 id="pageTitle">Dashboard</h1></div><div class="server"><span>Waktu server</span><b id="serverClock">—</b><small id="backendBadge">Backend: —</small></div></header>
+
+    <section id="tab-dashboard" class="tab">
+      <div class="metrics">
+        <div class="metric"><span>Total Ujian</span><strong id="mExam">0</strong></div>
+        <div class="metric"><span>Dipublikasikan</span><strong id="mPublished">0</strong></div>
+        <div class="metric"><span>Check-in</span><strong id="mSession">0</strong></div>
+        <div class="metric"><span>Sudah Submit</span><strong id="mSubmit">0</strong></div>
+      </div>
+      <div class="grid2">
+        <article class="panel"><div class="panel-head"><div><div class="kicker">AKSI CEPAT</div><h2>Mulai ujian baru</h2></div><button class="btn primary" id="quickNew">+ Buat Ujian</button></div><p>Alur: buat → input/import XLSX → preview/edit → publish → kode/QR → ujian → nilai.</p><div class="flow"><span>Buat</span><i>→</i><span>Soal</span><i>→</i><span>Preview</span><i>→</i><span>Bagikan</span><i>→</i><span>Nilai</span></div></article>
+        <article class="panel"><div class="panel-head"><div><div class="kicker">UJIAN TERBARU</div><h2>Ringkas</h2></div></div><div id="recentExams" class="compact-list"></div></article>
+      </div>
+    </section>
+
+    <section id="tab-exams" class="tab hidden">
+      <div class="toolbar"><div><p class="muted">Buat ujian umum, import .xlsx, lalu edit setiap butir sebelum publish.</p></div><button class="btn primary" id="newExamBtn">+ Ujian Baru</button></div>
+      <div id="examCards" class="exam-grid"></div>
+    </section>
+
+    <section id="tab-results" class="tab hidden">
+      <div class="toolbar"><div class="select-group"><label>Pilih ujian<select id="resultExam"></select></label></div><div class="toolbar-actions"><button class="btn ghost" id="refreshResults">↻ Refresh</button><button class="btn primary" id="downloadResults">Unduh CSV</button></div></div>
+      <div class="metrics small"><div class="metric"><span>Check-in</span><strong id="rCheckin">0</strong></div><div class="metric"><span>Submit</span><strong id="rSubmit">0</strong></div><div class="metric"><span>Rata-rata</span><strong id="rAverage">—</strong></div><div class="metric"><span>Tertinggi</span><strong id="rTop">—</strong></div></div>
+      <div class="grid2 results-grid"><article class="panel"><div class="panel-head"><div><div class="kicker">PESERTA</div><h2>Check-in</h2></div></div><div class="table-wrap"><table><thead><tr><th>No.</th><th>Nama</th><th>Kelas</th><th>Status</th><th></th></tr></thead><tbody id="participantsBody"></tbody></table></div></article><article class="panel"><div class="panel-head"><div><div class="kicker">HASIL</div><h2>Nilai Terkirim</h2></div></div><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Kelas</th><th>Nilai</th><th>Skor</th></tr></thead><tbody id="resultsBody"></tbody></table></div></article></div>
+    </section>
+
+    <section id="tab-storage" class="tab hidden">
+      <div class="toolbar"><div><p class="muted">Kelola gambar stimulus. Aset aktif aman; arsip tidak pernah dibersihkan otomatis.</p></div><div class="toolbar-actions"><button class="btn ghost" id="refreshStorage">↻ Refresh</button><button class="btn primary" id="cleanupPreviewBtn">Preview Cleanup</button></div></div>
+      <div class="metrics small">
+        <div class="metric"><span>Terpakai</span><strong id="sUsed">0 MB</strong></div>
+        <div class="metric"><span>Penggunaan</span><strong id="sPct">0%</strong></div>
+        <div class="metric"><span>File aktif</span><strong id="sFiles">0</strong></div>
+        <div class="metric"><span>Diarsipkan</span><strong id="sArchived">0</strong></div>
+      </div>
+      <article class="panel storage-policy"><div class="panel-head"><div><div class="kicker">LIFECYCLE</div><h2>Auto-cleanup</h2></div><span id="sMode" class="tag">LOCAL</span></div><div class="storage-policy-grid"><div><span>Limit kebijakan</span><b id="sLimit">—</b></div><div><span>Warning</span><b id="sWarn">75%</b></div><div><span>Retensi ujian</span><b id="sRetention">180 hari</b></div><div><span>Orphan</span><b id="sOrphan">30 hari</b></div></div><div class="storage-bar"><i id="sBar"></i></div><p id="sCleanupInfo" class="muted">Belum ada preview cleanup.</p><div class="button-row"><button class="btn ghost hidden" id="runCleanupBtn">Jalankan Cleanup</button></div></article>
+      <article class="panel"><div class="panel-head"><div><div class="kicker">ASET GAMBAR</div><h2>File aktif</h2></div></div><div class="table-wrap"><table><thead><tr><th>Preview</th><th>File</th><th>Ukuran</th><th>Ujian</th><th>Status</th><th></th></tr></thead><tbody id="storageBody"></tbody></table></div></article>
+    </section>
+  </main>
+</div>
+
+<div id="editorModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head"><div><div class="kicker">EDITOR UJIAN</div><h2 id="editorTitle">Ujian Baru</h2></div><button class="icon-btn" id="closeEditor">×</button></div>
+    <div class="editor-grid">
+      <section class="editor-section">
+        <h3>1. Pengaturan</h3>
+        <div class="form-grid">
+          <label class="wide">Judul ujian<input id="eTitle" placeholder="Contoh: Ulangan Sejarah XI"></label>
+          <label>Kode ujian<input id="eCode" maxlength="12" placeholder="AUTO"></label>
+          <label>Token utama<input id="eToken" maxlength="12" placeholder="AUTO"></label>
+          <label>Token cadangan 1 <small>(opsional)</small><input id="eTokenBackup1" maxlength="12" placeholder="Kosongkan jika tidak perlu"></label>
+          <label>Token cadangan 2 <small>(opsional)</small><input id="eTokenBackup2" maxlength="12" placeholder="Kosongkan jika tidak perlu"></label>
+          <label>Durasi (menit)<input id="eDuration" type="number" min="1" value="60"></label>
+          <label>Mulai<input id="eStart" type="datetime-local"></label>
+          <label>Berakhir<input id="eEnd" type="datetime-local"></label>
+          <label>Status<select id="eStatus"><option value="draft">Draft</option><option value="published">Publikasikan</option></select></label>
+          <label>Bobot penilaian<select id="eScoringMode"><option value="equal">Sama rata — 1 poin tiap soal</option><option value="custom">Bobot khusus per soal</option></select><small>Default ujian umum: semua butir bernilai sama.</small></label>
+          <label class="wide">Deskripsi<textarea id="eDescription" rows="2"></textarea></label>
+        </div>
+        <div class="check-block"><b>Kelas peserta</b><div id="classChecks" class="chips"></div></div>
+        <div class="switches"><label><input id="eLeaderboard" type="checkbox"> Live leaderboard</label><label><input id="eShowResult" type="checkbox" checked> Tampilkan nilai ke siswa setelah submit</label><label><input id="eShuffleQuestions" type="checkbox"> Acak urutan soal untuk tiap peserta</label></div>
+      </section>
+      <section class="editor-section">
+        <div class="section-head"><div><h3>2. Bank soal ujian</h3><p id="questionCounter">0 soal</p></div><div class="button-row"><a class="btn tiny ghost" href="templates/template-soal-smaga-exam.xlsx" download>Unduh Template XLSX</a><label class="btn tiny ghost file-btn">Impor XLSX<input id="xlsxInput" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label><button class="btn tiny" id="addQuestion">+ Manual</button></div></div>
+        <div id="importNotice" class="import-notice hidden"><b>Preview hasil import</b><span>Periksa semua butir di bawah. Klik Edit untuk memperbaiki teks, kunci, atau menambahkan gambar sebelum publish.</span></div>
+        <div id="questionList" class="question-list"></div>
+      </section>
+      <section class="editor-section share-section">
+        <h3>3. Bagikan</h3><div class="share-box"><div><span>Kode ujian</span><strong id="shareCode">—</strong><span>Token utama</span><strong id="shareToken">—</strong><div id="shareBackups" class="backup-tokens"></div></div><div class="qr-box"><img id="shareQr" alt="QR ujian"><small>QR membuka halaman peserta + mengisi kode ujian.</small></div></div>
+        <div class="share-links">
+          <label>Link peserta<input id="shareStudentUrl" readonly></label>
+          <div class="button-row"><button class="btn tiny ghost" id="copyStudentLink" type="button">Salin Link</button><a class="btn tiny" id="openStudentLink" target="_blank">Uji sebagai Peserta ↗</a><a class="btn tiny ghost" id="openLiveLink" target="_blank">Live Board ↗</a></div>
+        </div>
+      </section>
+    </div>
+    <div class="modal-actions"><button class="btn ghost" id="cancelEditor">Batal</button><button class="btn primary" id="saveExam">Simpan Ujian</button></div>
+  </div>
+</div>
+
+<div id="questionModal" class="modal hidden">
+ <div class="modal-card small-modal"><div class="modal-head"><div><div class="kicker">BUTIR SOAL</div><h2 id="qTitle">Tambah Soal</h2></div><button class="icon-btn" id="closeQuestion">×</button></div>
+ <div class="form-grid">
+   <label>Tipe<select id="qKind"><option value="pg">PG</option><option value="pgk">PG Kompleks</option></select></label><label>Domain<input id="qDomain" value="Umum"></label>
+   <label class="wide">Stimulus<textarea id="qStimulus" rows="3" placeholder="Teks stimulus/konteks (opsional)"></textarea></label>
+   <div class="wide image-editor"><div class="image-editor-head"><b>Gambar stimulus <small>(opsional)</small></b><span>Upload akan dikompres otomatis.</span></div><div class="image-inputs"><label>Link gambar<input id="qImageUrl" type="url" placeholder="https://.../gambar.jpg"><small>URL direct JPG/PNG/WebP/GIF.</small></label><div class="image-url-actions"><button id="mirrorQuestionImage" class="btn tiny ghost" type="button">Salin ke Storage SMAGA</button></div><label class="upload-box">Upload gambar<input id="qImageUpload" type="file" accept="image/*"></label></div><div id="qImagePreviewWrap" class="image-preview hidden"><img id="qImagePreview" alt="Preview gambar"><button id="removeQuestionImage" class="btn tiny ghost" type="button">Hapus gambar</button></div></div>
+   <label class="wide">Pertanyaan<textarea id="qQuestion" rows="2"></textarea></label>
+   <div class="wide answer-key-editor">
+     <div class="answer-key-head"><div><b>Opsi & Kunci Jawaban</b><small id="qKeyHelp">Klik lingkaran pada jawaban yang benar.</small></div><span>Ala Google Forms — tidak perlu mengetik huruf kunci.</span></div>
+     <div class="answer-option-row"><input class="key-pick" id="qKeyA" data-key-index="0" type="radio" name="qKeyPick"><b>A</b><input id="qA" placeholder="Opsi A"></div>
+     <div class="answer-option-row"><input class="key-pick" id="qKeyB" data-key-index="1" type="radio" name="qKeyPick"><b>B</b><input id="qB" placeholder="Opsi B"></div>
+     <div class="answer-option-row"><input class="key-pick" id="qKeyC" data-key-index="2" type="radio" name="qKeyPick"><b>C</b><input id="qC" placeholder="Opsi C"></div>
+     <div class="answer-option-row"><input class="key-pick" id="qKeyD" data-key-index="3" type="radio" name="qKeyPick"><b>D</b><input id="qD" placeholder="Opsi D"></div>
+     <div class="answer-option-row"><input class="key-pick" id="qKeyE" data-key-index="4" type="radio" name="qKeyPick"><b>E</b><input id="qE" placeholder="Opsi E (opsional)"></div>
+   </div>
+   <label>Bobot soal<input id="qWeight" type="number" min="1" max="100" value="1"><small>Dipakai hanya jika ujian memilih “Bobot khusus per soal”.</small></label>
+   <label class="check-card"><input id="qShuffleOptions" type="checkbox"><span><b>Acak opsi jawaban</b><small>Urutan A/B/C/D dapat berbeda pada tiap peserta. Kunci tetap aman.</small></span></label>
+   <label class="wide">Catatan internal guru <textarea id="qNotes" rows="2" placeholder="Tidak ditampilkan ke siswa"></textarea></label>
+ </div><div class="modal-actions"><button class="btn ghost" id="cancelQuestion">Batal</button><button class="btn primary" id="saveQuestion">Simpan Butir</button></div></div>
+</div>
+<div id="toast" class="toast hidden"></div>
+<script src="assets/js/admin.js?v=1.0-rc1"></script>
+</body></html>

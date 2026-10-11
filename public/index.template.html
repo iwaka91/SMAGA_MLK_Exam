@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050914">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<title>SMAGA Maliku Exam</title>
+<link rel="stylesheet" href="assets/css/app.css?v=0.4">
+{{NUMBAS_TEMPLATE}}
+<script src="{{NUMBAS_JS}}"></script>
+</head>
+<body>
+<div id="engineHost" class="engine-host" aria-hidden="true"></div>
+<div id="app">
+  <section id="bootView" class="center-screen">
+    <div class="boot-card">
+      <div class="brand-mark">SM</div>
+      <h1>SMAGA Maliku Exam</h1>
+      <p id="bootText">Menyiapkan engine ujian…</p>
+      <div class="loader"><i></i></div>
+    </div>
+  </section>
+
+  <section id="loginView" class="page hidden">
+    <div class="login-shell">
+      <div class="login-hero">
+        <div class="brand-row"><div class="brand-mark">SM</div><div><div class="eyebrow">SMAGA MALIKU EXAM</div><h1 id="loginExamTitle">SMAGA Maliku Exam</h1></div></div>
+        <div class="hero-copy">
+          <span class="status-pill">V1.0 RC1 • NUMBAS HEADLESS</span>
+          <h2>Masuk ke sesi ujian</h2>
+          <p>Peserta login pada jadwal angkatannya. Paket soal akan disiapkan di perangkat, tetapi tes baru dapat dimulai pada waktu yang ditetapkan server.</p>
+        </div>
+        <div class="schedule-card">
+          <div><b>Kode ujian</b><span>Dari guru/operator</span></div>
+          <div><b>Token</b><span>Wajib saat check-in</span></div>
+          <div><b>Paket ujian</b><span>Disimpan di perangkat</span></div>
+          <div><b>Waktu</b><span>Mengikuti server</span></div>
+          <div class="schedule-start"><b>Kendala perangkat</b><span>Laporkan pengawas</span></div>
+        </div>
+      </div>
+      <form id="loginForm" class="login-card">
+        <div class="card-kicker">IDENTITAS PESERTA</div>
+        <label>Kode ujian<input id="examCode" autocomplete="off" autocapitalize="characters" maxlength="12" placeholder="Contoh: AKM26" required></label>
+        <label>Nomor peserta<input id="participantNumber" autocomplete="off" placeholder="Contoh: 1001" required></label>
+        <label>Nama lengkap<input id="participantName" autocomplete="name" placeholder="Nama sesuai daftar" required></label>
+        <label>Kelas<select id="participantClass" required><option value="">Pilih kelas</option></select></label>
+        <label>Token<input id="participantToken" autocomplete="off" autocapitalize="characters" maxlength="12" placeholder="Masukkan token aktif" required></label>
+        <button class="btn primary wide" type="submit" id="loginBtn">Masuk & Siapkan Paket</button>
+        <div id="loginError" class="inline-error hidden"></div>
+        <div id="demoHint" class="demo-hint hidden"></div>
+        <div class="teacher-links"><a href="admin.html">Guru/Admin</a><span>•</span><a href="live.html">Live Board</a></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="waitingView" class="center-screen hidden">
+    <div class="waiting-card">
+      <div class="brand-row compact"><div class="brand-mark">SM</div><div><div class="eyebrow" id="waitingExamTitle">SMAGA MALIKU EXAM</div><h2>Ruang Tunggu</h2></div></div>
+      <div class="ready-ring">✓</div>
+      <h3>Anda berhasil masuk</h3>
+      <p class="muted">Paket soal sudah tersimpan di perangkat. Tes akan terbuka otomatis pada waktu mulai.</p>
+      <div class="waiting-countdown"><span>DIMULAI DALAM</span><strong id="waitCountdown">00:00:10</strong></div>
+      <div class="waiting-grid">
+        <div><span>Peserta</span><b id="waitName">—</b></div>
+        <div><span>Kelas</span><b id="waitClass">—</b></div>
+        <div><span>Paket soal</span><b class="ok" id="waitPackageCount">—</b></div>
+        <div><span>Waktu server</span><b id="waitServerClock">—</b></div>
+      </div>
+      <div class="info-strip">Jangan menutup halaman ini. Jika perangkat bermasalah, laporkan kepada pengawas.</div>
+    </div>
+  </section>
+
+  <section id="examView" class="exam-page hidden">
+    <header class="exam-header">
+      <div class="exam-brand"><button id="openNavBtn" class="icon-btn" aria-label="Buka navigasi">☰</button><div><div class="eyebrow" id="examTitleHeader">SMAGA MALIKU EXAM</div><b id="examParticipant">Peserta</b></div></div>
+      <div class="header-status"><div><span>SOAL</span><strong id="activeNumber">1</strong></div><div><span>TERJAWAB</span><strong id="answeredCount">0/—</strong></div></div>
+      <div id="timerCard" class="timer-card"><span>SISA WAKTU</span><strong id="examTimer">01:30:00</strong><small id="serverClock">Server —</small></div>
+    </header>
+
+    <main class="exam-content">
+      <article id="questionArea" class="question-area"></article>
+      <nav class="bottom-actions">
+        <button id="prevQuestion" class="btn ghost">← Sebelumnya</button>
+        <button id="flagQuestion" class="btn flag">⚑ Ragu-ragu</button>
+        <button id="nextQuestion" class="btn primary">Berikutnya →</button>
+      </nav>
+    </main>
+
+    <aside id="navDrawer" class="nav-drawer" aria-hidden="true">
+      <div class="drawer-head"><h2>Navigasi</h2><button id="closeNavBtn" class="icon-btn">×</button></div>
+      <div id="navGrid" class="nav-grid"></div>
+      <div class="legend"><span><i class="red"></i>Belum</span><span><i class="green"></i>Terjawab</span><span><i class="yellow"></i>Ragu</span></div>
+      <button id="reviewBtn" class="btn review wide">Review & Kirim Jawaban</button>
+    </aside>
+    <div id="navBackdrop" class="drawer-backdrop hidden"></div>
+  </section>
+
+  <section id="reviewView" class="page hidden">
+    <div class="review-shell">
+      <header class="review-head"><div><div class="eyebrow">REVIEW JAWABAN</div><h1>Periksa sebelum mengirim</h1></div><button id="backToExam" class="btn ghost">← Kembali ke soal</button></header>
+      <div class="review-summary">
+        <div><span>Total</span><strong id="reviewTotal">—</strong></div><div><span>Terjawab</span><strong id="reviewAnswered">0</strong></div><div><span>Belum</span><strong id="reviewUnanswered">—</strong></div><div><span>Ragu</span><strong id="reviewFlagged">0</strong></div>
+      </div>
+      <div id="reviewGrid" class="review-grid"></div>
+      <div class="submit-box">
+        <div><h3>Siap mengirim?</h3><p id="submitWarning">Pastikan seluruh jawaban sudah diperiksa.</p></div>
+        <button id="finalSubmitBtn" class="btn primary">Kirim Jawaban</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="submittingView" class="center-screen hidden">
+    <div class="waiting-card compact-card"><div class="loader big"><i></i></div><h2 id="submitStatusTitle">Mengirim jawaban…</h2><p id="submitStatusText" class="muted">Jangan tutup halaman sampai server mengonfirmasi.</p><button id="retrySubmitBtn" class="btn primary hidden">Coba Kirim Lagi</button></div>
+  </section>
+
+  <section id="resultView" class="center-screen hidden">
+    <div class="result-card"><div class="result-icon">✓</div><div class="eyebrow">JAWABAN BERHASIL DIKIRIM</div><h1 id="resultExamTitle">Terima kasih</h1><p id="resultIdentity" class="muted">—</p><div class="result-score"><span id="resultScoreLabel">Nilai</span><strong id="resultScore">0</strong><small id="resultRaw">0/48</small></div><p id="resultNote" class="result-note">Jawaban sudah diterima server.</p><div class="result-actions"><button id="homeAfterSubmit" class="btn ghost">⌂ Kembali ke Beranda</button><button id="closeAfterSubmit" class="btn primary">Tutup Aplikasi</button></div><p id="closeHelp" class="muted small hidden">Browser tidak mengizinkan tab ini ditutup otomatis. Anda dapat menutup tab dengan aman.</p></div>
+  </section>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+<script src="assets/js/app.js?v=0.4"></script>
+</body>
+</html>

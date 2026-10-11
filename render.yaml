@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: smaga-maliku-exam-rc1
+    runtime: docker
+    plan: free # DEMO/STAGING SAJA. Untuk ujian nyata gunakan selalu-on + load test.
+    healthCheckPath: /api/health
+    envVars:
+      - key: SMAGA_ENV
+        value: production
+      - key: SMAGA_DEMO_MODE
+        value: "0"
+      - key: SMAGA_SKIP_NUMBAS
+        value: "1"
+      - key: SMAGA_NO_BROWSER
+        value: "1"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SMAGA_PUBLIC_URL
+        sync: false
