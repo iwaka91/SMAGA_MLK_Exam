@@ -1,0 +1,22 @@
+# Sensitive configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*service_role*
+
+# Local state / generated artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+node_modules/
+.DS_Store
+mock_db.json
+*.sqlite
+*.sqlite3
+local_assets/
+logs/
+*.log
